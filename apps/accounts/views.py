@@ -1,4 +1,4 @@
-from django.contrib.auth import login
+from django.contrib.auth import login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
@@ -65,3 +65,7 @@ class HomeCareProfileUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateV
 
     def test_func(self):
         return self.request.user.role == CustomUser.ADMIN_GERAL
+
+def sair(request):
+    logout(request)
+    return redirect('login')

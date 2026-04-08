@@ -1,15 +1,18 @@
 from datetime import date, timedelta
 
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import ListView, CreateView
+from django.core.exceptions import PermissionDenied
+from django.urls import reverse_lazy
+from django.views.generic import ListView, CreateView, UpdateView
 from .models import Agendamento, ReceitaMedica, PedidoExame
-from .forms import AgendamentoForm, ReceitaMedicaForm, PedidoExameForm
+from .forms import AgendamentoForm, ReceitaMedicaForm, PedidoExameForm, AgendamentoEvolucaoForm
 from apps.notifications.tasks import enviar_whatsapp_agendamento
 from apps.pacientes.models import Paciente
 from apps.profissionais.models import Profissional
+from apps.accounts.models import CustomUser
 
 
 @login_required(login_url='/accounts/login/')
@@ -32,6 +35,20 @@ def dashboard(request):
         'proximo_agendamento': proximo_agendamento,
         'proximos_agendamentos': proximos_agendamentos,
     }
+    if request.user.role == CustomUser.PROFISSIONAL:
+        profissional = getattr(request.user, 'profissional_profile', None)
+        agendamentos_profissional = Agendamento.objects.filter(
+            homecare=homecare,
+            profissional=profissional,
+            data_hora_inicio__gte=agora
+        ) if profissional else Agendamento.objects.none()
+
+        context = {
+            'profissional': profissional,
+            'agendamentos': agendamentos_profissional.order_by('data_hora_inicio'),
+        }
+        return render(request, 'agendamentos/dashboard_profissional.html', context)
+
     return render(request, 'index.html', context)
 
 
@@ -42,7 +59,11 @@ class AgendamentoListView(LoginRequiredMixin, ListView):
     paginate_by = 20
 
     def get_queryset(self):
-        return Agendamento.objects.filter(homecare=self.request.user.homecare)
+        queryset = Agendamento.objects.filter(homecare=self.request.user.homecare)
+        if self.request.user.role == CustomUser.PROFISSIONAL:
+            profissional = getattr(self.request.user, 'profissional_profile', None)
+            queryset = queryset.filter(profissional=profissional) if profissional else queryset.none()
+        return queryset
 
 
 class AgendamentoCreateView(LoginRequiredMixin, CreateView):
@@ -50,6 +71,11 @@ class AgendamentoCreateView(LoginRequiredMixin, CreateView):
     form_class = AgendamentoForm
     template_name = 'agendamentos/novo.html'
     success_url = '/agendamentos/'
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.role == CustomUser.PROFISSIONAL:
+            raise PermissionDenied
+        return super().dispatch(request, *args, **kwargs)
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -63,6 +89,20 @@ class AgendamentoCreateView(LoginRequiredMixin, CreateView):
         agendamento.save()
         enviar_whatsapp_agendamento.delay(agendamento.id)
         return super().form_valid(form)
+
+
+class AgendamentoEvolucaoUpdateView(LoginRequiredMixin, UpdateView):
+    model = Agendamento
+    form_class = AgendamentoEvolucaoForm
+    template_name = 'agendamentos/evolucao_form.html'
+    success_url = reverse_lazy('dashboard')
+
+    def get_object(self, queryset=None):
+        agendamento = super().get_object(queryset)
+        profissional = getattr(self.request.user, 'profissional_profile', None)
+        if self.request.user.role != CustomUser.PROFISSIONAL or agendamento.profissional != profissional:
+            raise PermissionDenied
+        return agendamento
 
 
 class ReceitaMedicaListView(LoginRequiredMixin, ListView):

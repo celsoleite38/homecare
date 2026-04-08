@@ -72,6 +72,11 @@ class Agendamento(models.Model):
     data_fim_repeticao = models.DateField('Data fim da repetição', null=True, blank=True,
                                             help_text='Deixe em branco para repetição sem tempo determinado.')
     observacoes = models.TextField('Observações', blank=True)
+    evolucao_plantao = models.TextField('Evolução do plantão', blank=True)
+    observacao_administrador = models.TextField(
+        'Observação para administradores', blank=True,
+        help_text='Lembrete ou comentário reservado para a equipe administrativa.'
+    )
     criado_por = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         null=True,

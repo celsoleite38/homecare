@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard Profissional - HomeCare{% endblock %}
+{% block content %}
+<div class="space-y-6">
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+            <h1 class="text-3xl font-semibold">Dashboard do Profissional</h1>
+            <p class="text-slate-500 mt-2">Registre a evolução do plantão e deixe observações para a equipe administrativa.</p>
+        </div>
+    </div>
+
+    <div class="bg-white rounded-3xl shadow p-6">
+        <div class="grid gap-4 sm:grid-cols-2">
+            <div>
+                <p class="text-sm text-slate-500">Profissional</p>
+                <p class="text-xl font-semibold text-slate-900">
+                    {% if profissional %}
+                        {{ profissional.nome }}
+                    {% else %}
+                        {{ user.get_full_name|default:user.username }}
+                    {% endif %}
+                </p>
+            </div>
+            <div>
+                <p class="text-sm text-slate-500">Próximos plantões atribuídos</p>
+                <p class="text-xl font-semibold text-slate-900">{{ agendamentos.count }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-white rounded-3xl shadow overflow-x-auto">
+        <table class="min-w-full text-left text-sm">
+            <thead class="bg-slate-50 border-b">
+                <tr>
+                    <th class="px-4 py-4 text-slate-500">Paciente</th>
+                    <th class="px-4 py-4 text-slate-500">Procedimento</th>
+                    <th class="px-4 py-4 text-slate-500">Início</th>
+                    <th class="px-4 py-4 text-slate-500">Evolução</th>
+                    <th class="px-4 py-4 text-slate-500">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for agendamento in agendamentos %}
+                <tr class="border-b hover:bg-slate-50">
+                    <td class="px-4 py-4">{{ agendamento.paciente.nome }}</td>
+                    <td class="px-4 py-4">{{ agendamento.procedimento.nome }}</td>
+                    <td class="px-4 py-4">{{ agendamento.data_hora_inicio|date:'d/m/Y H:i' }}</td>
+                    <td class="px-4 py-4">{{ agendamento.evolucao_plantao|truncatechars:80|default:'Sem evolução registrada' }}</td>
+                    <td class="px-4 py-4">
+                        <a href="{% url 'agendamento_evolucao' agendamento.pk %}" class="text-sky-600 hover:text-sky-800">Registrar evolução</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="px-4 py-6 text-center text-slate-500">Nenhum plantão atribuído para os próximos dias.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

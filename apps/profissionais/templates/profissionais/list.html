@@ -7,7 +7,9 @@
             <h1 class="text-3xl font-semibold">Profissionais</h1>
             <p class="text-slate-500 mt-2">Cadastre cuidadores, enfermeiros, técnicos e médicos para seus plantões.</p>
         </div>
-        <a href="{% url 'profissional_novo' %}" class="inline-flex items-center gap-x-2 bg-sky-600 hover:bg-sky-700 text-white px-5 py-3 rounded-3xl">Novo profissional</a>
+        {% if user.role != 'profissional' %}
+            <a href="{% url 'profissional_novo' %}" class="inline-flex items-center gap-x-2 bg-sky-600 hover:bg-sky-700 text-white px-5 py-3 rounded-3xl">Novo profissional</a>
+        {% endif %}
     </div>
     <div class="overflow-x-auto bg-white rounded-3xl shadow">
         <table class="min-w-full text-left text-sm">

@@ -30,6 +30,16 @@ class AgendamentoForm(forms.ModelForm):
             self.fields['intervalo_repeticao'].queryset = IntervaloRepeticao.objects.none()
 
 
+class AgendamentoEvolucaoForm(forms.ModelForm):
+    class Meta:
+        model = Agendamento
+        fields = ['evolucao_plantao', 'observacao_administrador']
+        widgets = {
+            'evolucao_plantao': forms.Textarea(attrs={'rows': 5}),
+            'observacao_administrador': forms.Textarea(attrs={'rows': 4}),
+        }
+
+
 class ReceitaMedicaForm(forms.ModelForm):
     class Meta:
         model = ReceitaMedica

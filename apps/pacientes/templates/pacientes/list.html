@@ -7,7 +7,9 @@
             <h1 class="text-3xl font-semibold">Pacientes</h1>
             <p class="text-slate-500 mt-2">Registre pacientes e defina os profissionais autorizados para cada caso.</p>
         </div>
-        <a href="{% url 'paciente_novo' %}" class="inline-flex items-center gap-x-2 bg-sky-600 hover:bg-sky-700 text-white px-5 py-3 rounded-3xl">Novo paciente</a>
+        {% if user.role != 'profissional' %}
+            <a href="{% url 'paciente_novo' %}" class="inline-flex items-center gap-x-2 bg-sky-600 hover:bg-sky-700 text-white px-5 py-3 rounded-3xl">Novo paciente</a>
+        {% endif %}
     </div>
     <div class="overflow-x-auto bg-white rounded-3xl shadow">
         <table class="min-w-full text-left text-sm">
