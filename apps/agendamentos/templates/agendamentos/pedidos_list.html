@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block title %}Pedidos de Exame - HomeCare{% endblock %}
+{% block content %}
+<div class='space-y-6'>
+    <div class='flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between'>
+        <div>
+            <h1 class='text-3xl font-semibold'>Pedidos de Exame</h1>
+            <p class='text-slate-500 mt-2'>Confira os pedidos de exame gerados.</p>
+        </div>
+        <a href='{% url 'pedido_novo' %}' class='inline-flex items-center gap-x-2 bg-sky-600 hover:bg-sky-700 text-white px-5 py-3 rounded-3xl'>Novo pedido</a>
+    </div>
+    <div class='overflow-x-auto bg-white rounded-3xl shadow'>
+        <table class='min-w-full text-left text-sm'>
+            <thead class='bg-slate-50 border-b'>
+                <tr>
+                    <th class='px-4 py-4 text-slate-500'>Paciente</th>
+                    <th class='px-4 py-4 text-slate-500'>Profissional</th>
+                    <th class='px-4 py-4 text-slate-500'>Exame</th>
+                    <th class='px-4 py-4 text-slate-500'>Solicitação</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for pedido in pedidos %}
+                <tr class='border-b hover:bg-slate-50'>
+                    <td class='px-4 py-4'>{{ pedido.paciente.nome }}</td>
+                    <td class='px-4 py-4'>{{ pedido.profissional.nome }}</td>
+                    <td class='px-4 py-4'>{{ pedido.exame.nome }}</td>
+                    <td class='px-4 py-4'>{{ pedido.data_solicitacao|date:'d/m/Y' }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan='4' class='px-4 py-6 text-center text-slate-500'>Nenhum pedido de exame cadastrado.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block title %}Especialidades - HomeCare{% endblock %}
+{% block content %}
+<div class="space-y-6">
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+            <h1 class="text-3xl font-semibold">Especialidades</h1>
+            <p class="text-slate-500 mt-2">Cadastre e atualize as especialidades utilizadas pelos profissionais e plantões.</p>
+        </div>
+        <a href="{% url 'catalogo_especialidade_novo' %}" class="inline-flex items-center gap-x-2 bg-sky-600 hover:bg-sky-700 text-white px-5 py-3 rounded-3xl">Nova especialidade</a>
+    </div>
+    <div class="overflow-x-auto bg-white rounded-3xl shadow">
+        <table class="min-w-full text-left text-sm">
+            <thead class="bg-slate-50 border-b">
+                <tr>
+                    <th class="px-4 py-4 text-slate-500">Nome</th>
+                    <th class="px-4 py-4 text-slate-500">Descrição</th>
+                    <th class="px-4 py-4 text-slate-500">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for especialidade in especialidades %}
+                <tr class="border-b hover:bg-slate-50">
+                    <td class="px-4 py-4">{{ especialidade.nome }}</td>
+                    <td class="px-4 py-4">{{ especialidade.descricao|default:'-' }}</td>
+                    <td class="px-4 py-4">
+                        <a href="{% url 'catalogo_especialidade_editar' especialidade.pk %}" class="text-sky-600 hover:text-sky-800">Editar</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="3" class="px-4 py-6 text-center text-slate-500">Nenhuma especialidade cadastrada.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block title %}Novo Paciente - HomeCare{% endblock %}
+{% block content %}
+<div class="max-w-4xl mx-auto space-y-6">
+    <div>
+        <a href="{% url 'paciente_list' %}" class="text-slate-500 hover:text-slate-900">← Voltar aos pacientes</a>
+        <h1 class="text-3xl font-semibold mt-4">Cadastrar Paciente</h1>
+        <p class="text-slate-500 mt-2">Informe os dados do paciente, plano de saúde e profissionais autorizados.</p>
+    </div>
+    <div class="bg-white rounded-3xl shadow p-8">
+        <form method="post" class="space-y-6">
+            {% csrf_token %}
+            <div class="grid gap-6 lg:grid-cols-2">
+                {{ form.nome|as_crispy_field }}
+                {{ form.idade|as_crispy_field }}
+                {{ form.cpf|as_crispy_field }}
+                {{ form.data_nascimento|as_crispy_field }}
+                {{ form.endereco|as_crispy_field }}
+                {{ form.telefone|as_crispy_field }}
+                {{ form.quadro_medico|as_crispy_field }}
+                {{ form.plano_saude|as_crispy_field }}
+            </div>
+            {{ form.profissionais_autorizados|as_crispy_field }}
+            <button type="submit" class="bg-sky-600 hover:bg-sky-700 text-white px-6 py-3 rounded-3xl">Salvar paciente</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

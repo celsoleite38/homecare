@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard - HomeCare{% endblock %}
+{% block content %}
+<div class='grid gap-6 lg:grid-cols-[1.4fr_0.6fr]'>
+    <div class='space-y-6'>
+        <div class='grid gap-6 sm:grid-cols-2 xl:grid-cols-4'>
+            <div class='bg-white rounded-3xl p-6 shadow card-hover'>
+                <p class='text-slate-500 text-sm'>Pacientes cadastrados</p>
+                <p class='text-4xl font-semibold text-slate-900 mt-3'>{{ total_pacientes }}</p>
+            </div>
+            <div class='bg-white rounded-3xl p-6 shadow card-hover'>
+                <p class='text-slate-500 text-sm'>Profissionais ativos</p>
+                <p class='text-4xl font-semibold text-slate-900 mt-3'>{{ total_profissionais }}</p>
+            </div>
+            <div class='bg-white rounded-3xl p-6 shadow card-hover'>
+                <p class='text-slate-500 text-sm'>Plantões hoje</p>
+                <p class='text-4xl font-semibold text-slate-900 mt-3'>{{ total_agendamentos_hoje }}</p>
+            </div>
+            <div class='bg-white rounded-3xl p-6 shadow card-hover'>
+                <p class='text-slate-500 text-sm'>Plantões ativos e próximos 48h</p>
+                <p class='text-4xl font-semibold text-slate-900 mt-3'>{{ total_agendamentos_48h }}</p>
+            </div>
+            <div class='bg-white rounded-3xl p-6 shadow card-hover border border-sky-100'>
+                <p class='text-sky-600 text-sm font-semibold'>Próximo agendamento</p>
+                <p class='text-2xl font-semibold text-slate-900 mt-3'>
+                    {% if proximo_agendamento %}
+                        {{ proximo_agendamento.paciente.nome }}
+                    {% else %}
+                        Nenhum
+                    {% endif %}</p>
+                <p class='text-slate-500 text-sm mt-2'>
+                    {% if proximo_agendamento %}
+                        {{ proximo_agendamento.data_hora_inicio|date:'d/m/Y H:i' }}
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+
+        <div class='bg-white rounded-3xl shadow p-6'>
+            <div class='flex flex-col md:flex-row md:items-center md:justify-between'>
+                <div>
+                    <h2 class='text-2xl font-semibold'>Agendamentos próximos</h2>
+                    <p class='text-sm text-slate-500 mt-1'>Visualize os próximos plantões e procedimentos e acompanhe os responsáveis.</p>
+                </div>
+                <a href='/agendamentos/novo/' class='mt-4 md:mt-0 inline-flex items-center gap-x-2 bg-sky-600 hover:bg-sky-700 text-white px-5 py-3 rounded-3xl text-sm font-semibold'>
+                    <i class='fa-solid fa-plus'></i> Novo agendamento
+                </a>
+            </div>
+            <div class='mt-6 overflow-x-auto'>
+                <table class='min-w-full text-left text-sm'>
+                    <thead class='bg-slate-50 border-b'>
+                        <tr>
+                            <th class='px-4 py-4 text-slate-500'>Paciente</th>
+                            <th class='px-4 py-4 text-slate-500'>Profissional</th>
+                            <th class='px-4 py-4 text-slate-500'>Procedimento</th>
+                            <th class='px-4 py-4 text-slate-500'>Início</th>
+                            <th class='px-4 py-4 text-slate-500'>Tipo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for agendamento in proximos_agendamentos %}
+                        <tr class='border-b hover:bg-slate-50'>
+                            <td class='px-4 py-4'>{{ agendamento.paciente.nome }}</td>
+                            <td class='px-4 py-4'>{{ agendamento.profissional.nome }}</td>
+                            <td class='px-4 py-4'>{{ agendamento.procedimento.nome }}</td>
+                            <td class='px-4 py-4'>{{ agendamento.data_hora_inicio|date:'d/m/Y H:i' }}</td>
+                            <td class='px-4 py-4'>{{ agendamento.get_tipo_plantao_display }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan='5' class='px-4 py-6 text-center text-slate-500'>Nenhum agendamento nos próximos dias.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <aside class='space-y-6'>
+        <div class='bg-white rounded-3xl p-6 shadow card-hover'>
+            <h3 class='text-xl font-semibold'>Atalhos rápidos</h3>
+            <div class='mt-6 grid gap-4'>
+                <a href='/pacientes/novo/' class='block rounded-3xl bg-slate-950 text-white px-5 py-4'>Cadastrar paciente</a>
+                <a href='/profissionais/novo/' class='block rounded-3xl bg-slate-950 text-white px-5 py-4'>Cadastrar profissional</a>
+                <a href='/agendamentos/novo/' class='block rounded-3xl bg-slate-950 text-white px-5 py-4'>Agendar plantão</a>
+                
+            </div>
+        </div>
+
+        <div class='bg-white rounded-3xl p-6 shadow card-hover'>
+            <h3 class='text-xl font-semibold'>Registre informações</h3>
+            <p class='text-slate-500 mt-3'>Cadastre especialidades, planos de saúde, procedimentos e exames para que sistema esteja pronto para os plantões.</p>
+        </div>
+    </aside>
+</div>
+{% endblock %}

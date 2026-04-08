@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block title %}Profissionais - HomeCare{% endblock %}
+{% block content %}
+<div class="space-y-6">
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+            <h1 class="text-3xl font-semibold">Profissionais</h1>
+            <p class="text-slate-500 mt-2">Cadastre cuidadores, enfermeiros, técnicos e médicos para seus plantões.</p>
+        </div>
+        <a href="{% url 'profissional_novo' %}" class="inline-flex items-center gap-x-2 bg-sky-600 hover:bg-sky-700 text-white px-5 py-3 rounded-3xl">Novo profissional</a>
+    </div>
+    <div class="overflow-x-auto bg-white rounded-3xl shadow">
+        <table class="min-w-full text-left text-sm">
+            <thead class="bg-slate-50 border-b">
+                <tr>
+                    <th class="px-4 py-4 text-slate-500">Nome</th>
+                    <th class="px-4 py-4 text-slate-500">Especialidade</th>
+                    <th class="px-4 py-4 text-slate-500">Registro</th>
+                    <th class="px-4 py-4 text-slate-500">Telefone</th>
+                    <th class="px-4 py-4 text-slate-500">Ativo</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for profissional in profissionais %}
+                <tr class="border-b hover:bg-slate-50">
+                    <td class="px-4 py-4">{{ profissional.nome }}</td>
+                    <td class="px-4 py-4">{{ profissional.especialidade }}</td>
+                    <td class="px-4 py-4">{{ profissional.registro }}</td>
+                    <td class="px-4 py-4">{{ profissional.telefone }}</td>
+                    <td class="px-4 py-4">{{ profissional.ativo|yesno:'Sim,Não' }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="px-4 py-6 text-center text-slate-500">Nenhum profissional cadastrado.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

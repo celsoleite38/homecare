@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block title %}Cadastro do HomeCare{% endblock %}
+{% block content %}
+<div class='max-w-4xl mx-auto space-y-6'>
+    <div>
+        <h1 class='text-3xl font-semibold mt-4'>Cadastro do HomeCare</h1>
+        <p class='text-slate-500 mt-2'>Crie o primeiro HomeCare e o usuário proprietário do sistema.</p>
+    </div>
+    <div class='bg-white rounded-3xl shadow p-8'>
+        <form method='post' enctype='multipart/form-data' class='space-y-6'>
+            {% csrf_token %}
+            <div class='grid gap-6 lg:grid-cols-2'>
+                {{ form.nome|as_crispy_field }}
+                {{ form.cnpj|as_crispy_field }}
+                {{ form.endereco|as_crispy_field }}
+                {{ form.telefone_fixo|as_crispy_field }}
+                {{ form.telefone_celular|as_crispy_field }}
+                {{ form.whatsapp_celular|as_crispy_field }}
+                {{ form.logo|as_crispy_field }}
+                {{ form.descricao|as_crispy_field }}
+            </div>
+            <div class='border-t border-slate-200 pt-6'>
+                <h2 class='text-2xl font-semibold'>Dados do proprietário</h2>
+                <div class='grid gap-6 lg:grid-cols-2 mt-4'>
+                    {{ form.username|as_crispy_field }}
+                    {{ form.email|as_crispy_field }}
+                    {{ form.password1|as_crispy_field }}
+                    {{ form.password2|as_crispy_field }}
+                    {{ form.first_name|as_crispy_field }}
+                    {{ form.last_name|as_crispy_field }}
+                    {{ form.telefone|as_crispy_field }}
+                    {{ form.cpf|as_crispy_field }}
+                    {{ form.endereco_usuario|as_crispy_field }}
+                </div>
+            </div>
+            <button type='submit' class='bg-sky-600 hover:bg-sky-700 text-white px-6 py-3 rounded-3xl'>Criar HomeCare</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block title %}Novo Profissional - HomeCare{% endblock %}
+{% block content %}
+<div class="max-w-4xl mx-auto space-y-6">
+    <div>
+        <a href="{% url 'profissional_list' %}" class="text-slate-500 hover:text-slate-900">← Voltar aos profissionais</a>
+        <h1 class="text-3xl font-semibold mt-4">Cadastrar Profissional</h1>
+        <p class="text-slate-500 mt-2">Registro completo para permitir a alocação correta em plantões e procedimentos.</p>
+    </div>
+    <div class="bg-white rounded-3xl shadow p-8">
+        <form method="post" class="space-y-6">
+            {% csrf_token %}
+            <div class="grid gap-6 lg:grid-cols-2">
+                {{ form.nome|as_crispy_field }}
+                {{ form.telefone|as_crispy_field }}
+                {{ form.orgao_regulador|as_crispy_field }}
+                {{ form.registro|as_crispy_field }}
+                {{ form.especialidade|as_crispy_field }}
+                {{ form.endereco|as_crispy_field }}
+                {{ form.cpf|as_crispy_field }}
+                {{ form.ativo|as_crispy_field }}
+            </div>
+            <button type="submit" class="bg-sky-600 hover:bg-sky-700 text-white px-6 py-3 rounded-3xl">Salvar profissional</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

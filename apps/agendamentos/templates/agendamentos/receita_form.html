@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block title %}Nova Receita Médica - HomeCare{% endblock %}
+{% block content %}
+<div class='max-w-4xl mx-auto space-y-6'>
+    <div>
+        <a href='{% url 'receitas_list' %}' class='text-slate-500 hover:text-slate-900'>← Voltar às receitas</a>
+        <h1 class='text-3xl font-semibold mt-4'>Nova Receita Médica</h1>
+        <p class='text-slate-500 mt-2'>Registre a prescrição para o paciente.</p>
+    </div>
+    <div class='bg-white rounded-3xl shadow p-8'>
+        <form method='post' class='space-y-6'>
+            {% csrf_token %}
+            <div class='grid gap-6 lg:grid-cols-2'>
+                {{ form.paciente|as_crispy_field }}
+                {{ form.profissional|as_crispy_field }}
+                {{ form.validade|as_crispy_field }}
+            </div>
+            {{ form.descricao|as_crispy_field }}
+            <button type='submit' class='bg-sky-600 hover:bg-sky-700 text-white px-6 py-3 rounded-3xl'>Salvar receita</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
